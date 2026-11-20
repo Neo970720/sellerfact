@@ -58,6 +58,9 @@ def main() -> int:
         return 0
     jobs = res.get("jobs", [])
     print(f"[queue] 대기 {len(jobs)}건")
+    done_file = JOBS / "_done.txt"
+    JOBS.mkdir(exist_ok=True)
+    done_file.write_text("", "utf-8")   # 이번 실행분만 기록
     processed = 0
     for item in jobs:
         job = str(item.get("job", "")).strip()
@@ -91,7 +94,6 @@ def main() -> int:
                             "status": "error", "message": proc.stderr.strip()[-300:]})
             continue
         # ack는 커밋(게시) 성공 후에 한다 — scripts/ack_jobs.py 참고
-        done_file = JOBS / "_done.txt"
         with done_file.open("a", encoding="utf-8") as f:
             f.write(job + "\n")
         processed += 1

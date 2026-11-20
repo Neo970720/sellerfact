@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 output/
 work/sellerfact/.tmp/
+jobs/_done.txt
+jobs/_done.txt
