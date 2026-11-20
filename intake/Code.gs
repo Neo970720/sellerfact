@@ -138,10 +138,41 @@ function doPost(e) {
     payloadSheet().appendRow([job, b64]);
     if (mode === 'demo') bumpDemoCounter();
     notify('새 접수', job + ' / ' + mode + ' / ' + client + ' / ' + skuCount + ' SKU');
+    dispatchRunner(job);   // 즉시 실행 요청(실패해도 10분 스케줄이 처리)
     return out({ok: true, job: job, state: 'queued'});
   } catch (err) {
     notify('접수 오류', String(err));
     return out({ok: false, state: 'error', message: '접수 중 오류가 발생했습니다.'});
+  }
+}
+
+/**
+ * GitHub Actions 실행을 즉시 요청한다(스크립트 속성 GITHUB_TOKEN: actions:write 전용 토큰).
+ * 실패해도 큐에 남아 있으므로 10분 스케줄이 이어서 처리한다.
+ */
+function dispatchRunner(job) {
+  var token = props().getProperty('GITHUB_TOKEN');
+  if (!token) return false;
+  var repo = props().getProperty('GITHUB_REPO') || 'Neo970720/sellerfact';
+  var url = 'https://api.github.com/repos/' + repo + '/actions/workflows/audit.yml/dispatches';
+  try {
+    var res = UrlFetchApp.fetch(url, {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      payload: JSON.stringify({ref: 'main', inputs: {mode: 'queue'}}),
+      muteHttpExceptions: true
+    });
+    var code = res.getResponseCode();
+    if (code >= 300) notify('실행 요청 실패', job + ' / HTTP ' + code + ' / ' + res.getContentText().slice(0, 200));
+    return code < 300;
+  } catch (err) {
+    notify('실행 요청 오류', job + ' / ' + String(err));
+    return false;
   }
 }
 
