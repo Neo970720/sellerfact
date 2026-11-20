@@ -14,6 +14,7 @@
  *   GUMROAD_PRODUCT_ID (유료 판매 시) 셀러팩트 상품 ID
  *   REPORT_BASE      (선택) 기본 https://neo970720.github.io/sellerfact
  *   NOTIFY_EMAIL     (선택) 운영 알림 받을 메일
+ *   CONTACT_EMAIL    (선택) 고객 회신용 대표 메일 — 기본 thready.ceo@gmail.com (MailApp replyTo)
  */
 
 var MAX_SKUS = 300;
@@ -22,6 +23,8 @@ var DEMO_DAILY_CAP = 20;       // 무료 체험 일일 상한(남용 방지)
 
 function props() { return PropertiesService.getScriptProperties(); }
 function reportBase() { return props().getProperty('REPORT_BASE') || 'https://neo970720.github.io/sellerfact'; }
+/** 대외 회신 주소. 스크립트 속성 CONTACT_EMAIL로 덮어쓸 수 있다. */
+function contactEmail() { return props().getProperty('CONTACT_EMAIL') || 'thready.ceo@gmail.com'; }
 
 /* ------------------------------------------------------------------ 저장소 */
 function db() {
@@ -285,7 +288,8 @@ function mailReport(row) {
     '</div>'
   ].join('');
   try {
-    MailApp.sendEmail({to: row.email, subject: subject, htmlBody: body, name: '셀러팩트'});
+    MailApp.sendEmail({to: row.email, subject: subject, htmlBody: body, name: '셀러팩트',
+                       replyTo: contactEmail()});
     jobsSheet().getRange(row.row, 12).setValue('y');
   } catch (err) {
     notify('메일 발송 실패', row.job + ' / ' + String(err));

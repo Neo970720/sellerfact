@@ -37,13 +37,15 @@
 | 접수 웹앱(Apps Script) | 배포 ID `AKfycbzY4J6VGrMOmbR5IDxd9B5YRLKpP1NMDDO5awDMMguTfqtgc0FERCbymcJBvmt-rBo0` |
 | 스크립트 | scriptId `12Wc3kc0n6vRm9DHvlcimQk0K8N4hnC1nSPEF6wKRx8K44LZfTzL2Su_x` (소스는 `intake/Code.gs`) |
 | 접수 큐 시트 | 셀러팩트 접수 큐 (jobs / payloads 시트) |
-| 스크립트 속성 | `QUEUE_KEY`, `GUMROAD_TOKEN`, `GUMROAD_PRODUCT_ID`, `GITHUB_TOKEN`(=actions:write 전용 PAT), `GITHUB_REPO`, `NOTIFY_EMAIL`, `SHEET_ID` |
+| 스크립트 속성 | `QUEUE_KEY`, `GUMROAD_TOKEN`, `GUMROAD_PRODUCT_ID`, `GITHUB_TOKEN`(=actions:write 전용 PAT), `GITHUB_REPO`, `NOTIFY_EMAIL`, `CONTACT_EMAIL`(기본 `thready.ceo@gmail.com`), `SHEET_ID` |
 | 저장소 시크릿 | `QUEUE_ENDPOINT`, `QUEUE_KEY` |
 | 상품(Gumroad) | https://sheetwrightstudio.gumroad.com/l/sellerfact-audit · product_id `Q1CGQJ91ukjGDo9iD8OFyg==` · 라이선스 키 블록 사용 |
 
 **즉시 실행**: 접수되면 Apps Script가 GitHub Actions `workflow_dispatch`(mode=queue)를 바로 호출합니다(실측 5초 내 시작).
 GitHub 10분 스케줄은 보조 수단이며, 둘 다 실패해도 작업은 큐에 남아 다음 주기에 처리됩니다.
 `GITHUB_TOKEN`은 이 저장소 전용 fine-grained PAT(Actions: Read and write, 2027-02-18 만료)이며 90일마다 갱신이 필요합니다.
+
+**대외 메일 주소**: 2026-11-20부터 셀러팩트의 대외 문의·회신 주소는 `thready.ceo@gmail.com`으로 통일했다. 페이지 문의 표기·구조화 데이터(email)·리포트 발송 메일의 `replyTo`가 모두 이 주소를 쓴다(발송 계정 자체는 Apps Script 실행 계정 `neo970720@gmail.com`).
 
 Apps Script 코드를 고친 뒤에는 `intake/Code.gs`를 그대로 붙여넣거나, Apps Script 편집기에서 저장 → 배포 관리 → 새 버전 배포로 반영합니다.
 
