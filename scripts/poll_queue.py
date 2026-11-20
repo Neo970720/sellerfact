@@ -90,9 +90,10 @@ def main() -> int:
             call(endpoint, {"action": "ack", "key": key, "job": job,
                             "status": "error", "message": proc.stderr.strip()[-300:]})
             continue
-        status = "done"
-        url = f"https://neo970720.github.io/sellerfact/view.html?job={job}"
-        call(endpoint, {"action": "ack", "key": key, "job": job, "status": status, "url": url})
+        # ack는 커밋(게시) 성공 후에 한다 — scripts/ack_jobs.py 참고
+        done_file = JOBS / "_done.txt"
+        with done_file.open("a", encoding="utf-8") as f:
+            f.write(job + "\n")
         processed += 1
     print(f"[queue] 처리 완료 {processed}건")
     return 0
