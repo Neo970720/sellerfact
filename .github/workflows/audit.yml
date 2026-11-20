@@ -2,14 +2,14 @@ name: sellerfact-audit
 
 # 셀러팩트 무인 점검 — AI 토큰 0, 유료 API 0. 이 워크플로가 유일한 실행 주체다.
 #  ① schedule      : 접수 큐(Apps Script)에서 대기 작업을 10분마다 가져와 점검
-#  ② dispatch      : 특정 작업 1건 즉시 실행(테스트·수동 재처리)
+#  ② dispatch      : mode=queue (즉시 큐 처리) 또는 mode=single + job (지정 작업 1건)
 #  ③ issue         : 제목이 [AUDIT]로 시작하는 이슈 = 접수 (GitHub 계정 보유 고객용 대체 창구)
 
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "queue = 접수 큐에서 대기 작업 처리 / single = 지정 작업 1건 실행"
+        description: "queue = 접수 큐 처리 / single = 지정 작업 1건 실행"
         required: false
         default: "single"
       job:
@@ -55,6 +55,7 @@ jobs:
       KC_CACHE_DIR: ${{ github.workspace }}/_cache
       QUEUE_ENDPOINT: ${{ secrets.QUEUE_ENDPOINT }}
       QUEUE_KEY: ${{ secrets.QUEUE_KEY }}
+      REPORT_BASE: https://neo970720.github.io/sellerfact
       PYTHONIOENCODING: "utf-8"
     steps:
       - uses: actions/checkout@v4
@@ -75,7 +76,7 @@ jobs:
         if: github.event_name == 'schedule' || github.event.inputs.mode == 'queue' || github.event.client_payload.mode == 'queue'
         run: python3 scripts/poll_queue.py
 
-      - name: 지정 작업 실행 (dispatch)
+      - name: 지정 작업 실행 (mode=single)
         if: (github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch') && github.event.inputs.mode != 'queue' && github.event.client_payload.mode != 'queue'
         env:
           JOB: ${{ github.event.inputs.job || github.event.client_payload.job }}
@@ -116,7 +117,7 @@ jobs:
           set -euo pipefail
           git config user.name "sellerfact-bot"
           git config user.email "sellerfact-bot@users.noreply.github.com"
-          git add -A docs/r
+          git add -A docs/r jobs/_done.txt
           if git diff --cached --quiet; then
             echo "새 결과 없음"; exit 0
           fi
@@ -126,3 +127,7 @@ jobs:
             sleep 5; git pull --rebase --autostash origin main || true
           done
           echo "결과 푸시 실패"; exit 1
+
+      - name: 게시 확인 후 큐 ack (고객 메일 발송)
+        if: success() && (github.event_name == 'schedule' || github.event.inputs.mode == 'queue' || github.event.client_payload.mode == 'queue')
+        run: python3 scripts/ack_jobs.py
