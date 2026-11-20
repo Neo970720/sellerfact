@@ -3,8 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>셀러팩트 — 상품을 팔기 전에, 사실을 먼저 확인합니다</title>
-<meta name="description" content="KC 인증·표시광고·상품정보 고시를 상품 목록 단위로 자동 점검해 엑셀·PDF 리포트로 내보냅니다.">
+<title>셀러팩트 — KC 인증 사전 점검 · 표시광고 금지어 · 상품정보제공고시 자동 점검</title>
+<meta name="description" content="스마트스토어·쿠팡 셀러 상품을 KC 인증 사전 점검, 표시광고 금지어, 상품정보제공고시 자동 점검으로 한 번에 확인합니다. 상품 목록 CSV 하나로 엑셀·PDF 리포트를 1분 안에 받고, 무료 2 SKU로 먼저 체험하세요.">
+<meta name="keywords" content="KC 인증 사전 점검, KC인증 조회, KC 인증번호 확인, 스마트스토어 쿠팡 표시광고 금지어, 상품정보제공고시 자동 점검, 상품정보제공고시 누락, 구매대행 고지, 어린이제품 KC, 표시광고법 과태료, 셀러팩트, SellerFact">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="셀러팩트 (SellerFact)">
+<link rel="canonical" href="https://neo970720.github.io/sellerfact/">
+
+<!-- Open Graph (카카오톡·페이스북·네이버 공유 카드) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="셀러팩트 (SellerFact)">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="셀러팩트 — KC 인증 사전 점검 · 표시광고 금지어 · 상품정보제공고시 자동 점검">
+<meta property="og:description" content="상품 목록 CSV 하나로 KC 인증 사전 점검·표시광고 금지어·상품정보제공고시를 자동 점검하고 엑셀·PDF 리포트를 1분 안에. 무료 2 SKU 체험.">
+<meta property="og:url" content="https://neo970720.github.io/sellerfact/">
+<meta property="og:image" content="https://neo970720.github.io/sellerfact/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="셀러팩트 — 상품을 팔기 전에, 사실을 먼저 확인합니다">
+
+<!-- Twitter / X 카드 -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="셀러팩트 — KC 인증 사전 점검 · 표시광고 금지어 · 상품정보제공고시 자동 점검">
+<meta name="twitter:description" content="상품 목록 CSV 하나로 KC 인증·표시광고·고시정보를 자동 점검. 엑셀·PDF 리포트 1분, 무료 2 SKU 체험.">
+<meta name="twitter:image" content="https://neo970720.github.io/sellerfact/og.png">
 <style>
   :root{
     --navy:#0F1B2D; --ink:#1C2434; --grey:#5A6474; --line:#D8DEE9;
@@ -70,6 +92,7 @@
     <a class="brand" href="./">셀러<span>팩트</span></a>
     <nav>
       <a href="#how">어떻게</a>
+      <a href="#scope">점검 항목</a>
       <a href="#request">점검 요청</a>
       <a href="#price">가격</a>
     </nav>
@@ -148,6 +171,18 @@ SC-001,유아 수면조끼 4종,유아용품 > 유아복,322B58368001,28900,순�
       <p class="hint" style="margin-top:14px">개인정보 처리: 입력하신 상품 정보는 점검·리포트 생성에만 쓰고, 완료 후 30일 내 폐기합니다.
         외부에 공개되지 않으며 제3자에게 제공하지 않습니다.</p>
     </form>
+  </section>
+
+  <section id="scope">
+    <h2>이런 것을 점검합니다</h2>
+    <div class="grid">
+      <div class="card"><h3>KC 인증 사전 점검</h3>
+        <p>내 상품이 안전인증·안전확인·공급자적합성 중 어디에 속하는지 판정하고, 인증번호의 상태(적합·반납)·모델명 일치·리콜 여부를 제품안전정보센터 공개 정보로 조회합니다.</p></div>
+      <div class="card"><h3>스마트스토어·쿠팡 표시광고 금지어</h3>
+        <p>“치료”, “100%”, “최고”, “무연”, “재생”처럼 표시광고법·식품표시광고법·화장품법에서 문제되는 표현을 찾아 쓰지 않아도 되는 대체 문구로 바꿔 드립니다.</p></div>
+      <div class="card"><h3>상품정보제공고시 자동 점검</h3>
+        <p>카테고리별 필수 고시항목과 공통 거래조건(배송·청약철회·교환/반품·A/S·분쟁해결)이 빠졌는지 확인하고, 해외 구매대행 상품의 고지 4줄도 함께 봅니다.</p></div>
+    </div>
   </section>
 
   <section id="price">
@@ -326,6 +361,41 @@ async function fetchJobStatus(job) {
     }
   } catch (e) { /* 무시 */ }
   return null;
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://neo970720.github.io/sellerfact/#org",
+      "name": "셀러팩트 (SellerFact)",
+      "url": "https://neo970720.github.io/sellerfact/",
+      "email": "contact@sellerfact.kr",
+      "description": "스마트스토어·쿠팡 셀러 상품의 KC 인증·표시광고·상품정보제공고시를 사전 점검하는 서비스"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://neo970720.github.io/sellerfact/#site",
+      "url": "https://neo970720.github.io/sellerfact/",
+      "name": "셀러팩트 — KC 인증 사전 점검·표시광고 금지어·상품정보제공고시 자동 점검",
+      "inLanguage": "ko-KR",
+      "publisher": {"@id": "https://neo970720.github.io/sellerfact/#org"}
+    },
+    {
+      "@type": "Service",
+      "name": "셀러팩트 상품 규제 사전 점검",
+      "serviceType": "KC 인증 사전 점검, 표시광고 금지어 점검, 상품정보제공고시 점검",
+      "url": "https://neo970720.github.io/sellerfact/",
+      "areaServed": "KR",
+      "provider": {"@id": "https://neo970720.github.io/sellerfact/#org"},
+      "offers": [
+        {"@type": "Offer", "name": "무료 체험 (2 SKU)", "price": "0", "priceCurrency": "KRW", "url": "https://neo970720.github.io/sellerfact/"},
+        {"@type": "Offer", "name": "상품 점검 리포트 (최대 50 SKU)", "price": "29", "priceCurrency": "USD", "url": "https://sheetwrightstudio.gumroad.com/l/sellerfact-audit"}
+      ]
+    }
+  ]
 }
 </script>
 </body>

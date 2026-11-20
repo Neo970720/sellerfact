@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://neo970720.github.io/sellerfact/</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://neo970720.github.io/sellerfact/og.png</image:loc>
+      <image:title>셀러팩트 — KC 인증 사전 점검·표시광고 금지어·상품정보제공고시 자동 점검</image:title>
+    </image:image>
+  </url>
+</urlset>
