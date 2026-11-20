@@ -1,10 +1,7 @@
 User-agent: *
-Allow: /$
-Allow: /view.html
-Allow: /sample_input.csv
-Allow: /og.png
+Allow: /
 
-# 고객별 점검 결과(개인·사업자 정보 포함)는 검색에 노출하지 않습니다.
+# 고객별 점검 결과(셀러명·입력 상품 정보 포함)는 검색에 노출하지 않습니다.
 Disallow: /r/
 
 Sitemap: https://neo970720.github.io/sellerfact/sitemap.xml
