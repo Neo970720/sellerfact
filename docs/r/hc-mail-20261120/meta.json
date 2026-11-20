@@ -1,0 +1,29 @@
+{
+  "job": "hc-mail-20261120",
+  "client": "메일경로점검",
+  "status": "done",
+  "started_at": "2026-11-20T18:54:44+09:00",
+  "finished_at": "2026-11-20T18:54:44+09:00",
+  "sku_count": 1,
+  "counts": {
+    "total": 1,
+    "grades": {
+      "A": 1
+    },
+    "severities": {
+      "경미": 1
+    }
+  },
+  "ruleset": {
+    "id": "SELLERFACT-KR-AUDIT",
+    "version": "2026.11.20-r1",
+    "law_basis_date": "2026-11-20"
+  },
+  "offline": false,
+  "urgent": [],
+  "files": {
+    "pdf": "report.pdf",
+    "xlsx": "report.xlsx",
+    "json": "data.json"
+  }
+}
