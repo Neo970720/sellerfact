@@ -76,7 +76,7 @@ jobs:
         run: python3 scripts/poll_queue.py
 
       - name: 지정 작업 실행 (dispatch)
-        if: github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
+        if: (github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch') && github.event.inputs.mode != 'queue' && github.event.client_payload.mode != 'queue'
         env:
           JOB: ${{ github.event.inputs.job || github.event.client_payload.job }}
           CLIENT: ${{ github.event.inputs.client || github.event.client_payload.client }}
