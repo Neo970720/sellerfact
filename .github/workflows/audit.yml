@@ -117,7 +117,7 @@ jobs:
           set -euo pipefail
           git config user.name "sellerfact-bot"
           git config user.email "sellerfact-bot@users.noreply.github.com"
-          git add -A docs/r
+          git add -A docs/r jobs/_done.txt
           if git diff --cached --quiet; then
             echo "새 결과 없음"; exit 0
           fi
