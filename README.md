@@ -28,6 +28,20 @@
      → Pages가 즉시 서비스 → 고객 페이지가 meta.json을 폴링해 다운로드 링크 표시
 ```
 
+## 운영 정보 (2026-11-20 가동)
+
+| 항목 | 값 |
+|---|---|
+| 고객 페이지 | https://neo970720.github.io/sellerfact/ |
+| 결과 페이지 | https://neo970720.github.io/sellerfact/view.html?job=<job> |
+| 접수 웹앱(Apps Script) | 배포 ID `AKfycbzY4J6VGrMOmbR5IDxd9B5YRLKpP1NMDDO5awDMMguTfqtgc0FERCbymcJBvmt-rBo0` |
+| 스크립트 | scriptId `12Wc3kc0n6vRm9DHvlcimQk0K8N4hnC1nSPEF6wKRx8K44LZfTzL2Su_x` (소스는 `intake/Code.gs`) |
+| 접수 큐 시트 | 셀러팩트 접수 큐 (jobs / payloads 시트) |
+| 저장소 시크릿 | `QUEUE_ENDPOINT`, `QUEUE_KEY` |
+| 상품(Gumroad) | https://sheetwrightstudio.gumroad.com/l/sellerfact-audit · product_id `Q1CGQJ91ukjGDo9iD8OFyg==` · 라이선스 키 블록 사용 |
+
+Apps Script 코드를 고친 뒤에는 `intake/Code.gs`를 그대로 붙여넣거나, Apps Script 편집기에서 저장 → 배포 관리 → 새 버전 배포로 반영합니다.
+
 ## 수동 실행 (테스트·재처리)
 
 ```bash
