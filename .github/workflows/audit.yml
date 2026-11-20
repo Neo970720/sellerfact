@@ -8,9 +8,14 @@ name: sellerfact-audit
 on:
   workflow_dispatch:
     inputs:
+      mode:
+        description: "queue = 접수 큐에서 대기 작업 처리 / single = 지정 작업 1건 실행"
+        required: false
+        default: "single"
       job:
-        description: "작업 ID (영문·숫자·하이픈)"
-        required: true
+        description: "작업 ID (영문·숫자·하이픈) — mode=single일 때 필수"
+        required: false
+        default: ""
       client:
         description: "리포트에 표시할 셀러명"
         required: false
@@ -66,8 +71,8 @@ jobs:
           python -m pip install --quiet --upgrade pip
           pip install --quiet xlsxwriter==3.2.0 reportlab==4.2.5 openpyxl==3.1.5
 
-      - name: 큐 처리 (schedule)
-        if: github.event_name == 'schedule'
+      - name: 큐 처리 (schedule / mode=queue)
+        if: github.event_name == 'schedule' || github.event.inputs.mode == 'queue' || github.event.client_payload.mode == 'queue'
         run: python3 scripts/poll_queue.py
 
       - name: 지정 작업 실행 (dispatch)
