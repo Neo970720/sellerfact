@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>셀러팩트 — 점검 리포트</title>
+<style>
+  :root{--navy:#0F1B2D;--ink:#1C2434;--grey:#5A6474;--line:#D8DEE9;--bg:#F7F8FB;--accent:#F2A93B;
+        --A:#1B7F5A;--B:#4C8C3F;--C:#A8720B;--D:#C4571F;--E:#A61B29;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);line-height:1.6;
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px}
+  header{background:#fff;border-bottom:1px solid var(--line)}
+  header .wrap{display:flex;align-items:center;height:64px;justify-content:space-between}
+  .brand{font-weight:800;font-size:19px;color:var(--navy);text-decoration:none;letter-spacing:-.02em}
+  .brand span{color:var(--accent)}
+  main{padding:36px 0 60px}
+  h1{font-size:26px;color:var(--navy);margin:0 0 6px;letter-spacing:-.02em}
+  .sub{color:var(--grey);font-size:14px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:18px}
+  .grades{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .g{border-radius:10px;padding:12px 16px;min-width:92px;text-align:center;border:1px solid var(--line)}
+  .g b{display:block;font-size:22px}
+  .g span{font-size:12px;color:var(--grey)}
+  .dl{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+  .dl a{display:block;flex:1 1 200px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:16px;background:#fff}
+  .dl a:hover{border-color:var(--navy)}
+  .dl strong{display:block;color:var(--navy);font-size:15px}
+  .dl small{color:var(--grey)}
+  ul{padding-left:18px;color:var(--grey);font-size:14px}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--grey)}
+  .pending{color:var(--grey)}
+  .err{color:#8A3B12;background:#FBEAE1;border-radius:12px;padding:16px}
+  .gradeA{background:#E9F5EF;color:var(--A)}.gradeB{background:#EFF6E7;color:var(--B)}
+  .gradeC{background:#FDF3DF;color:var(--C)}.gradeD{background:#FBEAE1;color:var(--D)}
+  .gradeE{background:#F9E2E4;color:var(--E)}
+  footer{border-top:1px solid var(--line);padding:24px 0 48px;font-size:12.5px;color:var(--grey)}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="./">셀러<span>팩트</span></a>
+  <a href="./" style="font-size:14px;color:#5A6474;text-decoration:none">새 점검 요청</a></div></header>
+<main class="wrap" id="app">
+  <h1>점검 리포트</h1>
+  <div class="sub pending" id="head">불러오는 중…</div>
+  <div id="body"></div>
+</main>
+<footer><div class="wrap">
+  본 리포트는 공개 법령·고시·공공 인증정보 기반 1차 스크리닝이며, 최종 판단은 지정 시험·인증기관 및 관할 행정기관의 확인이 필요합니다.
+  셀러팩트는 인증 신청·대행, 시험 의뢰, 법률 자문을 하지 않습니다.
+</div></footer>
+<script>
+const params = new URLSearchParams(location.search);
+const job = (params.get("job") || "").replace(/[^A-Za-z0-9_-]/g, "");
+const body = document.getElementById("body");
+const head = document.getElementById("head");
+const GRADE_LABEL = {A:"양호", B:"보완 권장", C:"보완 필요", D:"위험", E:"긴급"};
+
+if (!job) {
+  head.textContent = "작업 ID가 없습니다.";
+  body.innerHTML = '<div class="card err">주소에 job 파라미터가 필요합니다. <a href="./">점검 요청</a>에서 다시 시작해 주세요.</div>';
+} else {
+  head.innerHTML = `작업 ID <span class="mono">${job}</span> · <a href="https://neo970720.github.io/sellerfact/r/${job}/report.pdf">PDF 바로 받기</a>`;
+  load();
+}
+
+async function load() {
+  let meta = null;
+  for (let i = 0; i < 40; i++) {
+    try {
+      const res = await fetch(`r/${job}/meta.json`, {cache: "no-store"});
+      if (res.ok) { meta = await res.json(); break; }
+    } catch (e) { /* 아직 없음 */ }
+    await new Promise(r => setTimeout(r, 5000));
+  }
+  if (!meta) {
+    body.innerHTML = '<div class="card pending">아직 리포트가 준비되지 않았습니다. 접수가 정상인지 확인한 뒤 이 페이지를 새로고침해 주세요.</div>';
+    return;
+  }
+  if (meta.status === "error") {
+    body.innerHTML = `<div class="card err"><b>점검을 완료하지 못했습니다.</b><br>${meta.message || ""}<br>
+      입력 CSV의 헤더(sku_id, product_name, category …)와 인코딩을 확인해 주세요.</div>`;
+    return;
+  }
+  if (meta.status !== "done") {
+    body.innerHTML = '<div class="card pending">점검 중입니다… 이 페이지를 열어 두면 자동으로 갱신됩니다.</div>';
+    setTimeout(load, 8000);
+    return;
+  }
+
+  const grades = (meta.counts && meta.counts.grades) || {};
+  const sev = (meta.counts && meta.counts.severities) || {};
+  const cells = ["E","D","C","B","A"].filter(g => grades[g]).map(g =>
+    `<div class="g grade${g}"><b>${g}</b><span>${GRADE_LABEL[g]} ${grades[g]}</span></div>`).join("");
+  const urgent = (meta.urgent || []).map(u =>
+    `<li><b>${escapeHtml(u.sku_id || "")}</b> ${escapeHtml(u.product_name || "")} — ${u.grade}등급 (${u.score ?? "-"}점)</li>`).join("");
+
+  body.innerHTML = `
+    <div class="card">
+      <div class="sub">${escapeHtml(meta.client || "셀러")} · SKU ${meta.sku_count ?? "-"}개 ·
+        점검 완료 ${escapeHtml((meta.finished_at || "").replace("T", " "))}</div>
+      <div class="grades">${cells}</div>
+      <div class="sub" style="margin-top:14px">
+        치명 ${sev["치명"] || 0} · 중대 ${sev["중대"] || 0} · 보통 ${sev["보통"] || 0} · 경미 ${sev["경미"] || 0}
+        ${meta.offline ? " · 인증 실시간 조회 없이 실행(오프라인)" : ""}
+      </div>
+      ${urgent ? `<h1 style="font-size:16px;margin:22px 0 4px">먼저 볼 항목</h1><ul>${urgent}</ul>` : ""}
+      <div class="dl">
+        <a href="r/${job}/report.pdf" download><strong>PDF 리포트</strong><small>11쪽 브랜드 리포트 · 바로 열기</small></a>
+        <a href="r/${job}/report.xlsx" download><strong>엑셀 리포트</strong><small>6시트 대시보드 · 수정 문구 포함</small></a>
+        <a href="r/${job}/data.json" download><strong>판정 데이터</strong><small>JSON 원본 · 연동용</small></a>
+      </div>
+      <p class="sub" style="margin-top:16px">룰셋 ${escapeHtml((meta.ruleset && meta.ruleset.id) || "")} ·
+        ${escapeHtml((meta.ruleset && meta.ruleset.version) || "")} · 법령 기준일 ${escapeHtml((meta.ruleset && meta.ruleset.law_basis_date) || "")}</p>
+      <p class="sub">이 링크를 북마크해 두면 나중에 다시 받을 수 있습니다.</p>
+    </div>`;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+</script>
+</body>
+</html>

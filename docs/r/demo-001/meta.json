@@ -1,0 +1,39 @@
+{
+  "job": "demo-001",
+  "client": "샘플 셀러",
+  "status": "done",
+  "started_at": "2026-11-20T17:26:16+09:00",
+  "finished_at": "2026-11-20T17:26:20+09:00",
+  "sku_count": 2,
+  "counts": {
+    "total": 2,
+    "grades": {
+      "C": 1,
+      "D": 1
+    },
+    "severities": {
+      "중대": 2,
+      "경미": 1,
+      "보통": 2
+    }
+  },
+  "ruleset": {
+    "id": "SELLERFACT-KR-AUDIT",
+    "version": "2026.11.20-r1",
+    "law_basis_date": "2026-11-20"
+  },
+  "offline": false,
+  "urgent": [
+    {
+      "sku_id": "SC-D02",
+      "product_name": "[쿡메이트] 전기그릴 2구",
+      "grade": "D",
+      "score": 51
+    }
+  ],
+  "files": {
+    "pdf": "report.pdf",
+    "xlsx": "report.xlsx",
+    "json": "data.json"
+  }
+}

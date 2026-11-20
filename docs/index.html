@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>셀러팩트 — 상품을 팔기 전에, 사실을 먼저 확인합니다</title>
+<meta name="description" content="KC 인증·표시광고·상품정보 고시를 상품 목록 단위로 자동 점검해 엑셀·PDF 리포트로 내보냅니다.">
+<style>
+  :root{
+    --navy:#0F1B2D; --ink:#1C2434; --grey:#5A6474; --line:#D8DEE9;
+    --bg:#F7F8FB; --card:#FFFFFF; --accent:#F2A93B; --green:#1B7F5A; --red:#A61B29;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+  header{border-bottom:1px solid var(--line);background:#fff}
+  header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:19px;color:var(--navy);text-decoration:none}
+  .brand span{color:var(--accent)}
+  nav a{color:var(--grey);text-decoration:none;font-size:14px;margin-left:20px}
+  .hero{padding:64px 0 40px}
+  .kicker{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+  h1{font-size:40px;line-height:1.25;margin:12px 0 16px;letter-spacing:-.03em;color:var(--navy)}
+  .lead{font-size:17px;color:var(--grey);max-width:640px}
+  .stats{display:flex;gap:32px;flex-wrap:wrap;margin-top:28px}
+  .stat b{display:block;font-size:24px;color:var(--navy)}
+  .stat span{font-size:13px;color:var(--grey)}
+  section{padding:36px 0}
+  h2{font-size:22px;color:var(--navy);letter-spacing:-.02em;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{margin:0 0 8px;font-size:15.5px;color:var(--navy)}
+  .card p{margin:0;font-size:14px;color:var(--grey)}
+  form{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+  label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 6px}
+  label:first-of-type{margin-top:0}
+  input[type=text],input[type=email],textarea,select{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  textarea{min-height:150px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;line-height:1.5}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .hint{font-size:12.5px;color:var(--grey);margin:6px 0 0}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  button{font:inherit;font-weight:700;border-radius:10px;padding:12px 20px;border:1px solid transparent;cursor:pointer}
+  .primary{background:var(--navy);color:#fff}
+  .primary:disabled{opacity:.5;cursor:default}
+  .ghost{background:#fff;border-color:var(--line);color:var(--navy)}
+  .status{margin-top:18px;padding:16px;border-radius:12px;background:#EEF2F9;font-size:14px;display:none}
+  .status.on{display:block}
+  .status.err{background:#FBEAE1;color:#8A3B12}
+  .status.ok{background:#E9F5EF;color:#14573C}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+  .price{display:flex;align-items:baseline;gap:10px;margin:8px 0 14px}
+  .price b{font-size:34px;color:var(--navy);letter-spacing:-.02em}
+  .price s{color:var(--grey);font-size:15px}
+  ul.check{list-style:none;padding:0;margin:0;font-size:14px;color:var(--grey)}
+  ul.check li{padding:5px 0 5px 24px;position:relative}
+  ul.check li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:800}
+  .embed{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:28px 0 48px;font-size:12.5px;color:var(--grey)}
+  .note{font-size:12.5px;color:var(--grey);background:#fff;border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:16px}
+  @media (max-width:640px){h1{font-size:30px}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="./">셀러<span>팩트</span></a>
+    <nav>
+      <a href="#how">어떻게</a>
+      <a href="#request">점검 요청</a>
+      <a href="#price">가격</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">SellerFact · 상품 규제 사전 점검</div>
+    <h1>상품을 팔기 전에,<br>사실을 먼저 확인합니다.</h1>
+    <p class="lead">
+      KC 인증 대상인지, 인증번호가 유효한지, 상세페이지에 못 쓰는 표현이 숨어 있는지,
+      필수 고시항목이 빠졌는지 — 상품 목록 파일 하나로 한 번에 점검하고
+      <b>수정 문구까지 정리한 엑셀·PDF 리포트</b>를 받습니다.
+    </p>
+    <div class="stats">
+      <div class="stat"><b>10 SKU</b><span>평균 1분 내 점검</span></div>
+      <div class="stat"><b>6시트 · 11쪽</b><span>엑셀 대시보드 + PDF 리포트</span></div>
+      <div class="stat"><b>공개 정보</b><span>제품안전정보센터·법령 기준</span></div>
+    </div>
+  </div>
+
+  <section id="how">
+    <h2>이렇게 동작합니다</h2>
+    <div class="grid">
+      <div class="card"><h3>1. 상품 목록 올리기</h3>
+        <p>SKU ID·상품명·카테고리·상세문구·KC 인증번호가 담긴 CSV 또는 엑셀. 아래 양식으로 바로 시작할 수 있습니다.</p></div>
+      <div class="card"><h3>2. 자동 점검</h3>
+        <p>인증 대상 판정 → 인증번호·리콜 실측 조회 → 금지 표현 탐지 → 고시정보·구매대행 고지 점검.</p></div>
+      <div class="card"><h3>3. 리포트 수령</h3>
+        <p>등급(A~E)·근거 조문·처분 범위·수정 문구·다음 조치가 담긴 엑셀과 PDF 링크를 바로 받습니다.</p></div>
+    </div>
+    <div class="note">
+      본 점검은 공개 법령·고시·공공 인증정보에 기반한 <b>1차 스크리닝</b>입니다.
+      최종 인증 트랙과 적합성 판단은 지정 시험·인증기관의 확인이 필요합니다.
+      셀러팩트는 인증 신청·대행, 시험 의뢰, 법률 자문을 하지 않습니다.
+    </div>
+  </section>
+
+  <section id="request">
+    <h2>점검 요청</h2>
+    <form id="auditForm" autocomplete="off">
+      <div class="row">
+        <div>
+          <label for="client">스토어·셀러명</label>
+          <input id="client" type="text" placeholder="예: 봄베베" maxlength="40" required>
+        </div>
+        <div>
+          <label for="email">리포트 받을 이메일</label>
+          <input id="email" type="email" placeholder="you@example.com" required>
+        </div>
+      </div>
+
+      <label for="license">라이선스 키 <span style="font-weight:400;color:var(--grey)">(무료 체험은 비워 두세요)</span></label>
+      <input id="license" type="text" placeholder="구매 후 메일로 받은 키" maxlength="80">
+
+      <label for="csv">상품 목록 CSV</label>
+      <textarea id="csv" placeholder="sku_id,product_name,category,model_name,price,detail_text,kc_cert_no,is_purchase_agency,origin,disclosure_fields,seller_note
+SC-001,유아 수면조끼 4종,유아용품 > 유아복,322B58368001,28900,순면 100% 소재로 만든 수면조끼입니다,CB015R1432-26029,N,캄보디아,품명/모델명;KC인증번호;재질;크기/무게;제조국;제조자/수입자;배송;청약철회;교환/반품/A/S;분쟁해결;거래약관,"></textarea>
+      <p class="hint">엑셀 파일을 쓰신다면 첫 시트를 CSV로 저장해 붙여넣으세요. 최대 300 SKU / 40KB.</p>
+      <div class="actions">
+        <button type="button" class="ghost" id="demoBtn">무료 체험 데이터 넣기 (2 SKU)</button>
+        <label class="ghost" style="margin:0;padding:12px 20px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;display:inline-block">
+          파일 선택
+          <input id="file" type="file" accept=".csv,text/csv" style="display:none">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="primary" id="submitBtn">점검 시작</button>
+        <a class="ghost" style="text-decoration:none;padding:12px 20px;border-radius:10px;font-weight:700" href="sample_input.csv" download>입력 양식 내려받기</a>
+      </div>
+
+      <div class="status" id="status"></div>
+    </form>
+  </section>
+
+  <section id="price">
+    <h2>가격</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>무료 체험</h3>
+        <div class="price"><b>0원</b></div>
+        <ul class="check">
+          <li>2 SKU까지 점검</li>
+          <li>샘플 데이터로 리포트 형식 확인</li>
+          <li>가입 없이 바로</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:var(--navy)">
+        <h3>상품 점검 리포트</h3>
+        <div class="price"><b>₩39,000</b><s>₩59,000</s></div>
+        <ul class="check">
+          <li>최대 50 SKU 점검</li>
+          <li>엑셀 6시트 + PDF 11쪽</li>
+          <li>위반별 근거 조문·처분 범위·수정 문구</li>
+          <li>구매 후 라이선스 키로 즉시 실행</li>
+        </ul>
+        <div class="actions"><a class="primary" id="buyBtn" style="text-decoration:none;padding:12px 20px;border-radius:10px" href="#request">구매하고 시작하기</a></div>
+      </div>
+      <div class="card">
+        <h3>KC 대행사·에이전시</h3>
+        <div class="price"><b>화이트라벨</b></div>
+        <ul class="check">
+          <li>월 단위 대량 점검</li>
+          <li>자사 브랜드 리포트</li>
+          <li>별도 문의</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    셀러팩트 (SellerFact) · 상품 규제 사전 점검 서비스 · 문의 <span id="contact">contact@sellerfact.kr</span><br>
+    룰셋 SELLERFACT-KR-AUDIT · 법령 기준일 2026-11-20 · 본 서비스는 인증 대행·법률 자문이 아닙니다.
+  </div>
+</footer>
+
+<iframe name="postFrame" id="postFrame" style="display:none" title="submit"></iframe>
+<script>
+const CONFIG = {
+  // 무인 접수 엔드포인트(Apps Script 웹앱). 비어 있으면 접수 불가 안내만 표시한다.
+  endpoint: "",
+  pageBase: "https://neo970720.github.io/sellerfact/",
+  maxSkus: 300
+};
+
+const $ = (id) => document.getElementById(id);
+const statusBox = $("status");
+function say(msg, kind) {
+  statusBox.className = "status on" + (kind ? " " + kind : "");
+  statusBox.innerHTML = msg;
+}
+
+const DEMO = `sku_id,product_name,category,model_name,price,detail_text,kc_cert_no,is_purchase_agency,origin,disclosure_fields,seller_note
+SC-D01,[봄베베] 유아 수면조끼 4종 세트,유아용품 > 유아복,322B58368001,"28,900",우리 아이 첫 수면조끼. 순면 100% 소재로 신생아부터 입을 수 있습니다.,CB015R1432-26029,N,캄보디아,품명/모델명;KC인증번호;재질;크기/무게;제조국;제조자/수입자;배송;청약철회;교환/반품/A/S;분쟁해결;거래약관,
+SC-D02,[쿡메이트] 전기그릴 2구,HU-Z655,"79,000",무연 전기그릴. 연기가 나지 않아 실내에서도 사용하세요.,,N,중국,품명/모델명;정격전압/소비전력;제조자/수입자;제조국,인증번호 미기재`;
+
+$("demoBtn").addEventListener("click", () => {
+  $("csv").value = DEMO;
+  if (!$("client").value) $("client").value = "샘플 셀러";
+  if (!$("email").value) $("email").value = "demo@example.com";
+  say("무료 체험용 2 SKU를 넣었습니다. '점검 시작'을 눌러 주세요.");
+});
+
+$("file").addEventListener("change", (ev) => {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const text = String(r.result || "");
+    if (text.length > 40000) {
+      say("파일이 큽니다. 40KB 이하로 줄이거나 SKU 수를 300개 이하로 나눠 주세요.", "err");
+      return;
+    }
+    $("csv").value = text;
+    say(`'${f.name}' 파일을 읽었습니다 (${text.split(/\r?\n/).filter(Boolean).length - 1}행).`);
+  };
+  r.readAsText(f, "utf-8");
+});
+
+function uuid() {
+  if (crypto.randomUUID) return crypto.randomUUID().replace(/-/g, "").slice(0, 20);
+  return Array.from(crypto.getRandomValues(new Uint8Array(10))).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+$("auditForm").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const csv = $("csv").value.trim();
+  const client = $("client").value.trim();
+  const email = $("email").value.trim();
+  const license = $("license").value.trim();
+  if (!csv) { say("상품 목록 CSV를 붙여넣어 주세요.", "err"); return; }
+  if (!/sku_id/i.test(csv.split(/\r?\n/)[0] || "")) { say("첫 줄이 헤더여야 합니다(sku_id, product_name, ...).", "err"); return; }
+  if (csv.length > 40000) { say("입력이 40KB를 넘습니다. SKU를 나눠서 요청해 주세요.", "err"); return; }
+  const rows = csv.split(/\r?\n/).filter(l => l.trim()).length - 1;
+  if (rows > CONFIG.maxSkus) { say(`한 번에 ${CONFIG.maxSkus} SKU까지 점검합니다(현재 ${rows}).`, "err"); return; }
+  if (!CONFIG.endpoint) {
+    say("무인 접수 서버가 아직 연결되지 않았습니다. 준비되는 대로 이 페이지에서 바로 실행됩니다.", "err");
+    return;
+  }
+  $("submitBtn").disabled = true;
+  const job = uuid();
+  say(`접수 중… (작업 ID <span class="mono">${job}</span>)`);
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = CONFIG.endpoint;
+  form.target = "postFrame";
+  form.style.display = "none";
+  const fields = {job, client, email, license, csv_b64: btoa(unescape(encodeURIComponent(csv))), skus: rows};
+  for (const [k, v] of Object.entries(fields)) {
+    const el = document.createElement("input");
+    el.type = "hidden"; el.name = k; el.value = v;
+    form.appendChild(el);
+  }
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(() => form.remove(), 2000);
+
+  pollJob(job);
+});
+
+function pollJob(job) {
+  const started = Date.now();
+  const viewUrl = `${CONFIG.pageBase}view.html?job=${job}`;
+  let ticks = 0;
+  const timer = setInterval(async () => {
+    ticks++;
+    const elapsed = Math.round((Date.now() - started) / 1000);
+    const status = await fetchJobStatus(job);
+    if (status && status.state === "error") {
+      clearInterval(timer);
+      $("submitBtn").disabled = false;
+      say(`접수되지 않았습니다: ${status.message || "확인 필요"}. ${status.hint || ""}`, "err");
+      return;
+    }
+    if (status && status.state === "done") {
+      clearInterval(timer);
+      say(`점검이 끝났습니다. <a href="${viewUrl}"><b>리포트 열기 →</b></a>`, "ok");
+      window.location.href = viewUrl;
+      return;
+    }
+    say(`점검 중… ${elapsed}초 경과 (작업 ID <span class="mono">${job}</span>)`);
+    if (elapsed > 900) {
+      clearInterval(timer);
+      $("submitBtn").disabled = false;
+      say(`시간이 오래 걸리고 있습니다. 잠시 후 <a href="${viewUrl}">이 링크</a>에서 확인해 주세요.`, "err");
+    }
+  }, 4000);
+}
+
+async function fetchJobStatus(job) {
+  try {
+    const res = await fetch(`${CONFIG.pageBase}r/${job}/meta.json`, {cache: "no-store"});
+    if (res.ok) {
+      const meta = await res.json();
+      return {state: meta.status === "done" ? "done" : (meta.status === "error" ? "error" : "queued"),
+              message: meta.message};
+    }
+  } catch (e) { /* 아직 없음 */ }
+  try {
+    const res2 = await fetch(`${CONFIG.endpoint}?action=status&job=${job}`, {cache: "no-store"});
+    if (res2.ok) {
+      const s = await res2.json();
+      return {state: s.state, message: s.message, hint: s.hint};
+    }
+  } catch (e) { /* 무시 */ }
+  return null;
+}
+</script>
+</body>
+</html>
