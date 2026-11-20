@@ -1,0 +1,39 @@
+{
+  "job": "hc-20261120a",
+  "client": "헬스체크",
+  "status": "done",
+  "started_at": "2026-11-20T18:50:11+09:00",
+  "finished_at": "2026-11-20T18:50:11+09:00",
+  "sku_count": 2,
+  "counts": {
+    "total": 2,
+    "grades": {
+      "A": 1,
+      "E": 1
+    },
+    "severities": {
+      "경미": 1,
+      "치명": 1,
+      "보통": 2
+    }
+  },
+  "ruleset": {
+    "id": "SELLERFACT-KR-AUDIT",
+    "version": "2026.11.20-r1",
+    "law_basis_date": "2026-11-20"
+  },
+  "offline": false,
+  "urgent": [
+    {
+      "sku_id": "HC-02",
+      "product_name": "헬스체크 전기그릴",
+      "grade": "E",
+      "score": 31
+    }
+  ],
+  "files": {
+    "pdf": "report.pdf",
+    "xlsx": "report.xlsx",
+    "json": "data.json"
+  }
+}
