@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20 17:26",
+  "generated_at": "2026-11-20 08:28",
   "ruleset": {
     "id": "SELLERFACT-KR-AUDIT",
     "version": "2026.11.20-r1",
@@ -249,5 +249,5 @@
     }
   ],
   "client": "샘플 셀러",
-  "input_file": "/tmp/tmp8rcfs1xy/input.csv"
+  "input_file": "/tmp/tmpr6567m_o/input.csv"
 }
