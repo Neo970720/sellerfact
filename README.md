@@ -76,6 +76,17 @@ gh workflow run audit.yml -f job=demo-001 -f client="샘플 셀러"
 `src/rules/ruleset.json`의 `meta.version`·`law_basis_date`를 올리고, 바뀐 조문·별표를 `sources`에 추가합니다.
 품목은 `product_rules`, 표현은 `ad_rules`, 처분은 `penalties`에 반영하면 리포트가 자동 반영합니다.
 
+## 검증 기록 (2026-11-20)
+
+| 검증 | 결과 |
+|---|---|
+| 워크플로 수동 실행(10 SKU) | 성공 · 18초 · 6시트 엑셀 + PDF 생성 · 자동 커밋(93cef8f) |
+| 큐 접수 → Actions 처리 → 게시 → 메일 (demo, 2 SKU) | 성공 · `live-03` · 22초 · 메일 "[셀러팩트] 무인테스트 상품 점검 리포트가 준비되었습니다" 수신 |
+| 고객 페이지 폼 제출 → 자동 처리 → 결과 페이지 이동 | 성공 · job `d5537d500fac49b6bd74` · PDF/엑셀/JSON 다운로드 200 |
+| 라이선스 검증 (Gumroad API) | 잘못된 키 → "라이선스 키를 확인할 수 없습니다" 정상 거부 |
+| 인증 실측(KC) 조회 | GitHub Actions 러너에서 조회 성공(`cert_status: verified`) |
+| AI 토큰 소모 | 0 (점검·리포트·게시·메일 모두 스크립트) |
+
 ## 한계
 
 - 공개 법령·공시 기반 **1차 스크리닝**입니다. 최종 인증 트랙·적합성은 지정 시험·인증기관 확인이 필요합니다.
