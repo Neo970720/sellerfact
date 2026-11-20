@@ -290,16 +290,28 @@ function installTriggers() {
   ScriptApp.newTrigger('sweep').timeBased().everyMinutes(10).create();
 }
 
-/** 최초 1회 실행: 시트 생성 + 큐 키 확인 + 트리거 설치 */
+/** 최초 1회 실행: 시트 생성 + 큐 키 확인 + 트리거 설치. 결과를 반환값으로 돌려준다. */
 function setup() {
   db();
   if (!props().getProperty('QUEUE_KEY')) {
     props().setProperty('QUEUE_KEY', Utilities.getUuid().replace(/-/g, ''));
   }
   installTriggers();
-  Logger.log(JSON.stringify({
+  var out = {
+    ok: true,
     sheet: db().getUrl(),
-    queue_key_length: props().getProperty('QUEUE_KEY').length,
+    queue_key: props().getProperty('QUEUE_KEY'),
     endpoint: ScriptApp.getService().getUrl()
-  }));
+  };
+  Logger.log(JSON.stringify(out));
+  return JSON.stringify(out);
+}
+
+/** 운영자 설정 주입: setProps(["KEY=VALUE", ...]) — 코드에 비밀값을 남기지 않는다. */
+function setProps(list) {
+  (list || []).forEach(function (pair) {
+    var i = String(pair).indexOf('=');
+    if (i > 0) props().setProperty(String(pair).slice(0, i), String(pair).slice(i + 1));
+  });
+  return JSON.stringify({ok: true, keys: Object.keys(props().getProperties())});
 }
